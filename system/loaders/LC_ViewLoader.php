@@ -29,12 +29,10 @@ class LC_ViewLoader {
      *
      * @var LC_System
      */
-    private $viewDir;
     private $_system;
 
     function __construct() {
-        $this->_system = LC_System::getInstance();
-        $this->viewDir = LC_VIEW_DIR;
+        $this->_system = &LC_System::getInstance();
     }
 
     /**
@@ -43,14 +41,26 @@ class LC_ViewLoader {
      * @param boolean $returnContent
      * @return string
      */
-    public function load($file, $returnContent = false) {
+    public function load($file, $args = array(), $returnContent = false) {
+        extract($args);
+        ob_start();
+        include LC_VIEW_DIR . $file;
         if ($returnContent) {
-            return file_get_contents($this->viewDir . $file);
+            $data = ob_get_contents();
+            @ob_end_clean();
+            return $data;
         } else {
-            echo $this->viewDir . $file;
+            @ob_end_flush();
+            exit;
         };
     }
-
+    
+    public function show404(){
+        header("HTTP/1.0 404 Not Found", true);
+        header("Status: 404 Not Found");
+        lcSystemLoad('view/404.html');
+        exit;
+    }
 }
 
 ?>

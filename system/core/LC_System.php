@@ -21,8 +21,7 @@ class LC_System {
      * @var LC_System
      */
     private static $_system;
-    private static $properties;
-    
+
     /**
      *
      * @var array
@@ -36,7 +35,7 @@ class LC_System {
     /**
      * @return LC_System 
      */
-    public static function &getInstance() {
+    public static function getInstance() {
         return self::$_system == NULL ?
                 self::$_system = new LC_System() : self::$_system;
     }
@@ -52,21 +51,20 @@ class LC_System {
     public function _autoLoad() {
 
         if (function_exists('scandir')) {
-
             $files = scandir(LC_AUTOLOAD_DIR);
 
             foreach ($files as $file) {
                 if ($file != ".." && $file != '.' && $file != 'autoload.php')
                     require LC_AUTOLOAD_DIR . $file;
             }
-        }
-        else {
+        } else {
             require LC_AUTOLOAD_DIR . 'autoload.php';
         }
     }
 
     public function _loadRoute() {
         /* @var $classLoad array */
+
         $classLoad = $this->_filter->loadUrl();
         $this->loadController($classLoad['class']);
         $this->dispatch($classLoad['class'], $classLoad['method']);
@@ -74,17 +72,25 @@ class LC_System {
 
     public function dispatch($class, $method = 'index') {
         $reflectionClass = new ReflectionClass($class);
-        $reflectionMethod = new ReflectionMethod($class, $method);
-        
+        try {
+            $reflectionMethod = new ReflectionMethod($class, $method);
+        } catch (ReflectionException $e) {
+            $this->_view->show404();
+        }
         if (array_search('ILC_Controller', $reflectionClass->getInterfaceNames()) === FALSE) {
             throw new InvalidArgumentException("Service must be instance of ILC_Controller!");
         }
         $instance = $reflectionClass->newInstance();
-        $str = $reflectionMethod->invokeArgs($instance, array());
+        $instance->setLoader($this->_view);
+        $str = $reflectionMethod->invokeArgs($instance, $this->_filter->getExtraParams());
     }
 
-    public function loadController($controller){
-        lcImport($controller.'.php', LC_CONTROLLERS_DIR);
+    public function loadController($controller) {
+        if (file_exists(LC_CONTROLLERS_DIR . $controller . '.php')) {
+            lcImport($controller . '.php', LC_CONTROLLERS_DIR);
+        } else {
+            $this->_view->show404();
+        }
     }
 
     /**
@@ -94,7 +100,7 @@ class LC_System {
     public function &getUrlFilter() {
         return $this->_filter;
     }
-    
+
     public function getContexts() {
         return $this->contexts;
     }
@@ -102,8 +108,6 @@ class LC_System {
     public function setContexts($contexts) {
         $this->contexts = $contexts;
     }
-
-
 
 }
 

@@ -24,7 +24,8 @@
  * @since Aug 7, 2012
  */
 interface ILC_Controller {
-    public function setLoader(&$loader);
+    public function setLoader(LC_ViewLoader &$loader);
+    public function postConstruct();
 }
 
 ?>

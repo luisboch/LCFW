@@ -1,5 +1,4 @@
 <?
-
 /**
  * define root folder of application 
  */
@@ -28,7 +27,7 @@ foreach ($properties as $k => $v) {
  */
 require LC_SYSTEM_DIR . 'lc_base.php';
 
-$_lc = LC_System::getInstance();
+$_lc = &LC_System::getInstance();
 
 /**
  * Load Request 

@@ -1,8 +1,9 @@
 <?php
 
-    LC_System::getInstance()->setContexts(array(
-        'employearea',
-        'adminarea',
-        'publicarea'
-    ))
+$system = &LC_System::getInstance();
+$system->setContexts(array(
+    'employearea',
+    'adminarea',
+    'publicarea'
+))
 ?>

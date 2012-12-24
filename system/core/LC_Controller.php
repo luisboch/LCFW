@@ -1,5 +1,7 @@
 <?php
+
 lcSystemLoad('interfaces/ILC_Controller.php');
+
 /*
  * Copyright (C) 2012 luis.boch
  *
@@ -23,15 +25,18 @@ lcSystemLoad('interfaces/ILC_Controller.php');
  * @author luis.boch
  * @since Aug 7, 2012
  */
-class LC_Controller implements ILC_Controller{
+abstract class LC_Controller implements ILC_Controller{
     /**
      *
      * @var LC_ViewLoader
      */
-    private $loader;
+    protected $loader;
     
-    public function setLoader(&$loader) {
+    public function setLoader(LC_ViewLoader &$loader) {
         $this->loader = &$loader;
+    }
+    
+    public function postConstruct() {
     }
 }
 

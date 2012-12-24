@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2012 luis.boch
+ * Copyright (C) 2012 luis
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -19,24 +19,20 @@
  */
 
 /**
+ * Description of MyFilter
  *
- * @author luis.boch
- * @since Aug 8, 2012
+ * @author luis
  */
-class Welcome extends LC_Controller {
-
-    public function index() {
-        $this->loader->load('index.php', 
-                array('title' => 'My First Page Title', 
-                    'content' => 'My First Content'), false);
+class MyFilter implements ILC_Filter{
+    
+    public function check($url) {
+        echo 'Esta url foi filtrada e sera ignorada<br>';
+        return true;
     }
 
-    public function secondMethod($a = 'Dinamic Var') {
-        $this->loader->load('index.php', 
-                array('title' => 'My First Page Title ['.$a.']',
-                    'content' => 'My First Content ['.$a.']'), false);
+    public function getPattern() {
+        return "*.php*";
     }
-
 }
 
 ?>
