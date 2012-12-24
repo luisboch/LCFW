@@ -68,16 +68,23 @@ class LC_System {
     public function _loadRoute() {
         /* @var $classLoad array */
         $classLoad = $this->_filter->loadUrl();
+        $this->loadController($classLoad['class']);
         $this->dispatch($classLoad['class'], $classLoad['method']);
     }
 
     public function dispatch($class, $method = 'index') {
         $reflectionClass = new ReflectionClass($class);
-        $reflectionMethod = new ReflectionMethod($method, $method);
+        $reflectionMethod = new ReflectionMethod($class, $method);
+        
         if (array_search('ILC_Controller', $reflectionClass->getInterfaceNames()) === FALSE) {
             throw new InvalidArgumentException("Service must be instance of ILC_Controller!");
         }
-        $str = $reflectionMethod->invokeArgs($reflectionClass->newInstance(array()), array());
+        $instance = $reflectionClass->newInstance();
+        $str = $reflectionMethod->invokeArgs($instance, array());
+    }
+
+    public function loadController($controller){
+        lcImport($controller.'.php', LC_CONTROLLERS_DIR);
     }
 
     /**

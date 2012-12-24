@@ -24,7 +24,12 @@
  * @since Aug 8, 2012
  */
 class Welcome extends LC_Controller{
-    
+    public function index(){
+        echo 'Pagina index';
+    }
+    public function x($a='default'){
+        echo 'Pagina x ['.$a.']';
+    }
 }
 
 ?>

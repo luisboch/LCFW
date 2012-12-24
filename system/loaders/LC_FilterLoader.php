@@ -20,6 +20,8 @@ class LC_FilterLoader {
     private $requestedUrl;
     private $sequences;
     private $targetPatch;
+    private $targetClass;
+    private $targetMethod;
 
     /**
      *
@@ -41,8 +43,8 @@ class LC_FilterLoader {
     public function loadUrl() {
         $this->_loadUrl();
         
-        $aux['class'] = $this->sequences[0];
-        $aux['method'] = $this->sequences[1];
+        $aux['class'] = $this->targetClass;
+        $aux['method'] = $this->targetMethod;
         return $aux;
     }
 
@@ -79,33 +81,31 @@ class LC_FilterLoader {
         $aux = $sequences;
         $sequences = array();
         foreach($aux as $k => $sq){
-            if($sq != 'index.php' && 'index.html'){
+            if($sq != 'index.php' && $sq != 'index.html' && $sq != ''){
                 $sequences[] = $sq;
             }
         }
         if (array_search($sequences[0], $this->_system->getContexts()) === FALSE) {
             
-            $this->targetClass = $sequences[0];
-            $this->targetMethod = $sequences[1];
+            $this->targetClass = $sequences[1];
+            $this->targetMethod = $sequences[2];
             $this->targetPatch = '';
             $this->sequences = &$sequences;
         
         } else {
             
-            $this->targetPatch = $sequences[0];
-            $this->targetClass = $sequences[1];
-            $this->targetMethod = $sequences[2];
+            $this->targetPatch = $sequences[1];
+            $this->targetClass = $sequences[2];
+            $this->targetMethod = $sequences[3];
             
             foreach ($sequences as $k => $v){
-                if($k != 0){
+                if($k != 0 && $v != ''){
                     $this->sequences [$k-1] = $v;
                 }
             }
             
         }
         
-        print_r($this->sequences);
-        exit;
     }
 
     /**
